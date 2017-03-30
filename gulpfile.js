@@ -7,8 +7,6 @@
 
 // 引入 gulp
 var gulp = require('gulp');
-
-
 // 引入组件
 var minifycss = require('gulp-minify-css'),//css压缩
     concat = require('gulp-concat'),//文件合并
