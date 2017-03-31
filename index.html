@@ -9,50 +9,126 @@
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
-	    <h1 class="mui-title">标题</h1>
+	    <h1 id="title" class="mui-title">首页</h1>
 	</header>
-	<div class="mui-content">
-		学习中。。。
-	</div>
 	<nav class="mui-bar mui-bar-tab">
-	    <a class="mui-tab-item mui-active">
+	    <a href="home.html" class="mui-tab-item mui-active">
 	        <span class="mui-icon mui-icon-home"></span>
 	        <span class="mui-tab-label">首页</span>
 	    </a>
-	    <a class="mui-tab-item">
-	        <span class="mui-icon mui-icon-phone"></span>
-	        <span class="mui-tab-label">电话</span>
+	    <a href="messages.html" class="mui-tab-item">
+	        <span class="mui-icon mui-icon-email"><span class="mui-badge">9</span></span>
+			<span class="mui-tab-label">消息</span>
 	    </a>
-	    <a class="mui-tab-item">
-	        <span class="mui-icon mui-icon-email"></span>
-	        <span class="mui-tab-label">邮件</span>
+	    <a href="list.html" class="mui-tab-item">
+	        <span class="mui-icon mui-icon-contact"></span>
+			<span class="mui-tab-label">通讯录</span>
 	    </a>
-	    <a class="mui-tab-item">
+	    <a href="settings.html" class="mui-tab-item">
 	        <span class="mui-icon mui-icon-gear"></span>
 	        <span class="mui-tab-label">设置</span>
 	    </a>
 	</nav>
+	<div class="mui-content"></div>
     <script src="js/mui.min.js"></script>
     <script type="text/javascript" charset="utf-8">
+    
+    	var webviewUrl = ['home.html', 'messages.html', 'list.html', 'settings.html'];
+    	var webviewStyles = {
+    		top: '45px',
+    		bottom: '51px'
+    	};
+    	var subWebview = '';
+      	var activeTab = webviewUrl[0];
+      	var title = document.getElementById('title');
       	
-      	var plusReady = function (){
-      		
-      		//系统状态栏文字颜色
-      		plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackOpaque');
-      		
-      		//系统状态栏背景色
-      		plus.navigator.setStatusBarBackground('#0c9aed');
-      		
-      		//禁止APP横屏
-      		plus.screen.lockOrientation("portrait-primary");
-      		
-      	};
+      	/*浏览器的兼容处理方法*/
+		var createIframe = function (el, opt) {
+		    var elContainer = document.querySelector(el);
+		    var wrapper = document.querySelector(".mui-iframe-wrapper");
+		    if(!wrapper){
+		        // 创建wrapper 和 iframe
+		        wrapper = document.createElement('div');
+		        wrapper.className = 'mui-iframe-wrapper';
+		        for(var i in opt.style){
+		            wrapper.style[i] = opt.style[i];
+		        }
+		        var iframe = document.createElement('iframe');
+		        iframe.src = opt.url;
+		        iframe.id = opt.id || opt.url;
+		        iframe.name = opt.id;
+		        wrapper.appendChild(iframe);
+		        elContainer.appendChild(wrapper);
+		    }else{
+		        var iframe = wrapper.querySelector('iframe');
+		        iframe.src = opt.url;
+		        iframe.id = opt.id || opt.url;
+		        iframe.name = iframe.id;
+		    }
+		}
+		
+		//mui初始化
+      	mui.init();
       	
-      	if(window.plus)
-      		plusReady();
+      	if (mui.os.plus) {
       		
-      	else
-      		document.addEventListener('plusready',plusReady,false);
+      		mui.plusReady(function(){
+	      		
+	      		//系统状态栏文字颜色
+	      		plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackOpaque');
+	      		
+	      		//系统状态栏背景色
+	      		plus.navigator.setStatusBarBackground('#0c9aed');
+	      		
+	      		//禁止APP横屏
+	      		plus.screen.lockOrientation("portrait-primary");
+	      		
+	      		
+	      		var self = plus.webview.currentWebview();
+	      		for( var i = 0; i <= webviewUrl.length; i++ ){
+	      			
+	      			subWebview = plus.webview.create(webviewUrl[i], webviewUrl[i], webviewStyles);
+	      			
+	      			if (i > 0)
+	      				subWebview.hide();
+	  				
+	  				self.append(subWebview);
+	      		}
+	      		
+	      	});
+	      	
+      	}else {
+      		// 创建iframe代替子页面
+	        createIframe('.mui-content',{
+	            url: webviewUrl[0],
+	            style: webviewStyles
+	        });
+      	}
+      	
+      	mui('.mui-bar-tab').on('tap', 'a', function(){
+      		var targetTab = this.getAttribute('href');
+      		if (targetTab == activeTab)
+      			return;
+      			
+  			title.innerHTML = this.querySelector('.mui-tab-label').innerHTML;
+  			
+  			if(mui.os.plus) {
+  				//显示当前点击的tab界面
+  				plus.webview.show(targetTab);
+  				
+  				//隐藏当前显示的tab界面
+  				plus.webview.hide(activeTab);
+  			}
+  			
+  			else
+  				// 创建iframe代替子页面
+		        createIframe('.mui-content',{
+		            url: targetTab,
+		            style: webviewStyles
+		        });
+  			
+  			activeTab = targetTab;
+      	});
       	
     </script>
 </body>
