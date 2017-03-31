@@ -189,5 +189,41 @@
 				}
 			}
 		}
+	},
+	"dependencies": {
+		"pages": {
+			"index.html": {
+				"resources": [
+					"js/mui.min.js",
+					"fonts/mui.ttf",
+					"css/style.min.css",
+					"css/mui.min.css"
+				],
+				"refer": [
+					"messages.html",
+					"home.html",
+					"list.html",
+					"settings.html"
+				],
+				"priority": 0
+			},
+			"home.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css"
+				],
+				"refer": [],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"css/style.css",
+				"gulpfile.js",
+				"js/mui.js",
+				"css/mui.css",
+				"README.md"
+			]
+		}
 	}
 }
